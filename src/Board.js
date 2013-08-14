@@ -24,6 +24,37 @@
       return this.columns()[columnIndex];
     },
 
+    getQueenLocations: function() {
+      var locations = [];
+      var queenIndex;
+      _.each(this.rows(), function(row, rowIndex) {
+        locations.push([rowIndex, _.indexOf(row, 1)]);
+      });
+      return locations;
+    },
+
+    getMinorDiagonal: function(rowIndex, columnIndex) {
+      //position on the board, so like board is 4x4, a number between 0 and 15
+      // row number and column number
+      //add 1 to the row until N, and subtract 1 from column until you reach 0
+      //NOT NEEDED subtract 1 from the row until 0, and add 1 to the column until N
+      var diagonal = [];
+      var n = this.get('n');
+      while (rowIndex !== n && columnIndex > -1) {
+        diagonal.push(this.get(rowIndex++)[columnIndex--]);
+      }
+      return diagonal;
+    },
+
+    getMajorDiagonal: function(rowIndex, columnIndex) {
+      var diagonal = [];
+      var n = this.get('n');
+      while (rowIndex !== n && columnIndex !== n) {
+        diagonal.push(this.get(rowIndex++)[columnIndex++]);
+      }
+      return diagonal;
+    },
+
     togglePiece: function(rowIndex, colIndex){
       this.get(rowIndex)[colIndex] = + !this.get(rowIndex)[colIndex];
       this.trigger('change');
@@ -88,19 +119,33 @@
     },
 
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow){
-      return false; // fixme
+      var diagonal = this.getMajorDiagonal(0, majorDiagonalColumnIndexAtFirstRow);
+      return sum(diagonal) >= 2;
     },
 
     hasAnyMajorDiagonalConflicts: function(){
-      return false; // fixme
+      var queenLocations = this.getQueenLocations();
+      for (var i = 0; i < queenLocations.length; i++) {
+        // var diagonal = this.getMajorDiagonal(queenLocations[i][0], queenLocations[i][1]);
+        var diagonal = this.getMajorDiagonal.apply(this, queenLocations[i]);
+        if (sum(diagonal) >= 2) return true;
+      }
+      return false;
     },
 
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow){
-      return false; // fixme
+      var diagonal = this.getMinorDiagonal(0, minorDiagonalColumnIndexAtFirstRow);
+      return sum(diagonal) >= 2;
     },
 
     hasAnyMinorDiagonalConflicts: function(){
-      return false; // fixme
+      var queenLocations = this.getQueenLocations();
+      for (var i = 0; i < queenLocations.length; i++) {
+        // var diagonal = this.getMajorDiagonal(queenLocations[i][0], queenLocations[i][1]);
+        var diagonal = this.getMinorDiagonal.apply(this, queenLocations[i]);
+        if (sum(diagonal) >= 2) return true;
+      }
+      return false;
     }
 
   });
