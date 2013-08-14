@@ -22,7 +22,7 @@ describe("Board", function() {
     ]);
   });
 
-  it("should find row conflicts", function() {
+  it("should find conflicts for row, rooks, and queens", function() {
     verifyConflictTypes(['row', 'rooks', 'queens'], [
       [0, 0, 0, 0],
       [1, 1, 0, 0],

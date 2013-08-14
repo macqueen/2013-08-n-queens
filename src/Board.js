@@ -16,6 +16,14 @@
       }, this);
     },
 
+    columns: function() {
+      return _.zip.apply(_, this.rows());
+    },
+
+    getColumn: function(columnIndex) {
+      return this.columns()[columnIndex];
+    },
+
     togglePiece: function(rowIndex, colIndex){
       this.get(rowIndex)[colIndex] = + !this.get(rowIndex)[colIndex];
       this.trigger('change');
@@ -58,19 +66,25 @@
     // todo: fill in all these functions - they'll help you!
 
     hasRowConflictAt: function(rowIndex){
-      return false; // fixme
+      return sum(this.get(rowIndex)) >= 2;
     },
 
     hasAnyRowConflicts: function(){
-      return false; // fixme
+      var that = this;
+      return _.any(_.range(this.get('n')), function (rowIndex){
+        return that.hasRowConflictAt(rowIndex);
+      });
     },
 
     hasColConflictAt: function(colIndex){
-      return false; // fixme
+      return sum(this.getColumn(colIndex)) >= 2;
     },
 
     hasAnyColConflicts: function(){
-      return false; // fixme
+      var that = this;
+      return _.any(_.range(this.get('n')), function (colIndex){
+        return that.hasColConflictAt(colIndex);
+      });
     },
 
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow){

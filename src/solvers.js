@@ -40,3 +40,10 @@ window.displayBoard = function(matrix){
     }).render()
   );
 };
+
+
+var sum = function(array) {
+  return _.reduce(array, function(currentTotal, element) {
+    return currentTotal + element;
+  }, 0);
+};
