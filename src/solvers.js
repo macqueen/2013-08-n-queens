@@ -105,7 +105,7 @@ window.countNRooksSolutions = function(n){
   };
 
   var tryToPlacePiece = function(board, rowNumber) {
-    if (rowNumber < 0) return;
+    rowNumber++;
     var row = board[rowNumber];
     var queenIndex = _.indexOf(row, 1);
     var colNumber;
@@ -114,7 +114,7 @@ window.countNRooksSolutions = function(n){
       colNumber = queenIndex + 1;
     }
     else {
-      tryToPlacePiece(board, --rowNumber);
+      return;
     }
 
     for (var i = colNumber; i < row.length; i++) {
@@ -125,23 +125,18 @@ window.countNRooksSolutions = function(n){
         row[i] = 1;
         if (rowNumber === n - 1) {
           counter++;
-          //board[rowNumber] = makeEmptyRow(n);
-          //tryToPlacePiece(board, --rowNumber);
-          return;
+          row[i] = 0;
         }
         else {
-          tryToPlacePiece(board, ++rowNumber);
+          tryToPlacePiece(board, rowNumber);
         }
       } //  IF
     } // FOR LOOP
-    //board[rowNumber] = makeEmptyRow(n);
-    //tryToPlacePiece(board, --rowNumber);
     return;
   }; //INNER FN
 
-  tryToPlacePiece(board, 0);
+  tryToPlacePiece(board, -1);
   return counter;
-
 };
 
 window.findNQueensSolution = function(n){
