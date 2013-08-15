@@ -28,7 +28,8 @@
       var locations = [];
       var queenIndex;
       _.each(this.rows(), function(row, rowIndex) {
-        locations.push([rowIndex, _.indexOf(row, 1)]);
+        queenIndex = _.indexOf(row, 1);
+        if (queenIndex >= 0) locations.push([rowIndex, queenIndex]);
       });
       return locations;
     },
