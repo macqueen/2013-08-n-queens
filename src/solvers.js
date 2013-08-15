@@ -37,10 +37,9 @@ window.findNRooksSolution = function(n){
   var solution;
 
   var willCreateConflict = function(rowNumber, columnNumber) {
-    var result;
     var seriousBoard = new Board(board);
     seriousBoard.togglePiece(rowNumber, columnNumber);
-    result = seriousBoard.hasAnyRooksConflicts();
+    var result = seriousBoard.hasAnyRooksConflicts();
     seriousBoard.togglePiece(rowNumber, columnNumber);
     return result;
   };
@@ -69,16 +68,16 @@ window.findNRooksSolution = function(n){
         else {
           tryToPlacePiece(board, rowNumber);
         }
-      } //  IF
-    } // FOR LOOP
+      }
+    }
     if (!solution) {
       return;
     }
-  }; //INNER FN
+  };
 
   tryToPlacePiece(board, -1);
   return solution;
-}; //MAIN FN
+};
 
 window.makeEmptyRow = function(n) {
   return _(_.range(n)).map(function(){
@@ -91,10 +90,9 @@ window.countNRooksSolutions = function(n){
   var counter = 0;
 
   var willCreateConflict = function(rowNumber, columnNumber) {
-    var result;
     var seriousBoard = new Board(board);
     seriousBoard.togglePiece(rowNumber, columnNumber);
-    result = seriousBoard.hasAnyRooksConflicts();
+    var result = seriousBoard.hasAnyRooksConflicts();
     seriousBoard.togglePiece(rowNumber, columnNumber);
     return result;
   };
@@ -115,20 +113,57 @@ window.countNRooksSolutions = function(n){
         else {
           tryToPlacePiece(board, rowNumber);
         }
-      } //  IF
-    } // FOR LOOP
+      }
+    }
     if (i > 0) row[i - 1] = 0;
     return;
-  }; //INNER FN
+  };
 
   tryToPlacePiece(board, -1);
   return counter;
 };
 
 window.findNQueensSolution = function(n){
-  var solution = undefined; //fixme
+  var board = makeEmptyMatrix(n);
+  var solution;
 
-  console.log('Single solution for ' + n + ' queens:', solution);
+  var willCreateConflict = function(rowNumber, columnNumber) {
+    var seriousBoard = new Board(board);
+    seriousBoard.togglePiece(rowNumber, columnNumber);
+    var result = seriousBoard.hasAnyQueensConflicts();
+    seriousBoard.togglePiece(rowNumber, columnNumber);
+    return result;
+  };
+
+  var tryToPlacePiece = function(board, rowNumber) {
+    if (solution) return;
+    rowNumber++;
+    var row = board[rowNumber];
+    for (var i = 0; i < row.length; i++) {
+      if (solution) return;
+      if (i > 0) row[i - 1] = 0;
+
+      if (!willCreateConflict(rowNumber, i)) {
+        row[i] = 1;
+        if (rowNumber === n - 1) {
+          solution = board;
+          return;
+        }
+        else {
+          tryToPlacePiece(board, rowNumber);
+        }
+      }
+    }
+    if (solution) {
+      return;
+    }
+    else {
+      if (i > 0) row[i - 1] = 0;
+      return;
+    }
+  };
+
+  tryToPlacePiece(board, -1);
   return solution;
 };
 
