@@ -38,7 +38,7 @@ window.findNRooksSolution = function(n){
   var counter = 0;
   // debugger;
 
-  var willFuckThingsUp = function(rowNumber, columnNumber) {
+  var willCreateConflict = function(rowNumber, columnNumber) {
     var result;
     var seriousBoard = new Board(board);
     seriousBoard.togglePiece(rowNumber, columnNumber);
@@ -49,9 +49,9 @@ window.findNRooksSolution = function(n){
 
   var tryToPlacePiece = function(board, rowNumber) {
     if (solution) return;
-    
+    //if we pop up to a previous call stack level, WHY does the rowNumber not match our expectation?
     var row = board[rowNumber];
-    // debugger;
+    debugger;
     var queenIndex = _.indexOf(row, 1);
     var colNumber;
     if (queenIndex < n - 1) {
@@ -59,12 +59,12 @@ window.findNRooksSolution = function(n){
       colNumber = queenIndex + 1;
     }
     else {
-      tryToPlacePiece(board, --rowNumber);
+      return;
     }
 
     for (var i = colNumber; i < row.length; i++) {
-      // debugger;
-      if (willFuckThingsUp(rowNumber, i)) {
+      debugger;
+      if (willCreateConflict(rowNumber, i)) {
         continue;
       }
       else {
@@ -72,18 +72,16 @@ window.findNRooksSolution = function(n){
         if (rowNumber === n - 1) {
           solution = board;
           counter++;
-          //board[rowNumber] = makeEmptyRow(n);
-          //tryToPlacePiece(board, --rowNumber);
           return solution;
         }
         else {
-          tryToPlacePiece(board, ++rowNumber);
+          rowNumber++;
+          tryToPlacePiece(board, rowNumber);
         }
       } //  IF
     } // FOR LOOP
     if (!solution) {
-      board[rowNumber] = makeEmptyRow(n);
-      tryToPlacePiece(board, --rowNumber);
+      return;
     }
   }; //INNER FN
 
@@ -99,10 +97,56 @@ window.makeEmptyRow = function(n) {
 };
 
 window.countNRooksSolutions = function(n){
-  var solutionCount = undefined; //fixme
+  var board = makeEmptyMatrix(n);
+  var counter = 0;
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
+  var willCreateConflict = function(rowNumber, columnNumber) {
+    var result;
+    var seriousBoard = new Board(board);
+    seriousBoard.togglePiece(rowNumber, columnNumber);
+    result = seriousBoard.hasAnyRooksConflicts();
+    seriousBoard.togglePiece(rowNumber, columnNumber);
+    return result;
+  };
+
+  var tryToPlacePiece = function(board, rowNumber) {
+    if (rowNumber < 0) return;
+    var row = board[rowNumber];
+    var queenIndex = _.indexOf(row, 1);
+    var colNumber;
+    if (queenIndex < n - 1) {
+      if (queenIndex >= 0) row[queenIndex] = 0;
+      colNumber = queenIndex + 1;
+    }
+    else {
+      tryToPlacePiece(board, --rowNumber);
+    }
+
+    for (var i = colNumber; i < row.length; i++) {
+      if (willCreateConflict(rowNumber, i)) {
+        continue;
+      }
+      else {
+        row[i] = 1;
+        if (rowNumber === n - 1) {
+          counter++;
+          //board[rowNumber] = makeEmptyRow(n);
+          //tryToPlacePiece(board, --rowNumber);
+          return;
+        }
+        else {
+          tryToPlacePiece(board, ++rowNumber);
+        }
+      } //  IF
+    } // FOR LOOP
+    //board[rowNumber] = makeEmptyRow(n);
+    //tryToPlacePiece(board, --rowNumber);
+    return;
+  }; //INNER FN
+
+  tryToPlacePiece(board, 0);
+  return counter;
+
 };
 
 window.findNQueensSolution = function(n){
