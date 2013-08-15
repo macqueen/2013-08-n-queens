@@ -35,7 +35,6 @@
 window.findNRooksSolution = function(n){
   var board = makeEmptyMatrix(n);
   var solution;
-  var counter = 0;
 
   var willCreateConflict = function(rowNumber, columnNumber) {
     var result;
@@ -61,14 +60,10 @@ window.findNRooksSolution = function(n){
     }
 
     for (var i = colNumber; i < row.length; i++) {
-      if (willCreateConflict(rowNumber, i)) {
-        continue;
-      }
-      else {
+      if (!willCreateConflict(rowNumber, i)) {
         row[i] = 1;
         if (rowNumber === n - 1) {
           solution = board;
-          counter++;
           return solution;
         }
         else {
@@ -107,31 +102,22 @@ window.countNRooksSolutions = function(n){
   var tryToPlacePiece = function(board, rowNumber) {
     rowNumber++;
     var row = board[rowNumber];
-    var queenIndex = _.indexOf(row, 1);
-    var colNumber;
-    if (queenIndex < n - 1) {
-      if (queenIndex >= 0) row[queenIndex] = 0;
-      colNumber = queenIndex + 1;
-    }
-    else {
-      return;
-    }
+    for (var i = 0; i < row.length; i++) {
+      if (i > 0) row[i - 1] = 0;
 
-    for (var i = colNumber; i < row.length; i++) {
-      if (willCreateConflict(rowNumber, i)) {
-        continue;
-      }
-      else {
+      if (!willCreateConflict(rowNumber, i)) {
         row[i] = 1;
         if (rowNumber === n - 1) {
           counter++;
           row[i] = 0;
+          continue;
         }
         else {
           tryToPlacePiece(board, rowNumber);
         }
       } //  IF
     } // FOR LOOP
+    if (i > 0) row[i - 1] = 0;
     return;
   }; //INNER FN
 
