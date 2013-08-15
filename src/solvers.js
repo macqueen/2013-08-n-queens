@@ -1,12 +1,101 @@
+/*
+0) empty board
+
+
+1) go to the next empty row
+2) try to place a new queen in there
+   //find the index of the queen
+    //index = 2 --> row[2] = 0 row[2+1] = 1
+    //index=-1 --> row[-1 + 1] = 1
+    //index = n-1, we're outa room --> so go up to the previous row and try again
+
+
+-->queen works
+  -->we have 4 queens
+    (possible option) increment counter
+    (possibly) append the board to some list
+    (somehow stop and return the board as is)
+    go back up, and move to the next column above the current row
+
+  -->we have <4 queens
+    move to the next row and repeat steps 1 and 2
+
+-->queen fails
+  -->if there are untried columns in the current row, 
+    goto 2
+
+  -->we've tried everything
+    go back up, and move to the next column above the current row
+    
+*/
+
+
 
 
 window.findNRooksSolution = function(n){
-  var solution = undefined; //fixme
-  //build board
-  //check using checkRooksFunction
+  var board = makeEmptyMatrix(n);
+  var solution;
+  var counter = 0;
+  // debugger;
 
-  console.log('Single solution for ' + n + ' rooks:', solution);
+  var willFuckThingsUp = function(rowNumber, columnNumber) {
+    var result;
+    var seriousBoard = new Board(board);
+    seriousBoard.togglePiece(rowNumber, columnNumber);
+    result = seriousBoard.hasAnyRooksConflicts();
+    seriousBoard.togglePiece(rowNumber, columnNumber);
+    return result;
+  };
+
+  var tryToPlacePiece = function(board, rowNumber) {
+    if (solution) return;
+    
+    var row = board[rowNumber];
+    // debugger;
+    var queenIndex = _.indexOf(row, 1);
+    var colNumber;
+    if (queenIndex < n - 1) {
+      if (queenIndex >= 0) row[queenIndex] = 0;
+      colNumber = queenIndex + 1;
+    }
+    else {
+      tryToPlacePiece(board, --rowNumber);
+    }
+
+    for (var i = colNumber; i < row.length; i++) {
+      // debugger;
+      if (willFuckThingsUp(rowNumber, i)) {
+        continue;
+      }
+      else {
+        row[i] = 1;
+        if (rowNumber === n - 1) {
+          solution = board;
+          counter++;
+          //board[rowNumber] = makeEmptyRow(n);
+          //tryToPlacePiece(board, --rowNumber);
+          return solution;
+        }
+        else {
+          tryToPlacePiece(board, ++rowNumber);
+        }
+      } //  IF
+    } // FOR LOOP
+    if (!solution) {
+      board[rowNumber] = makeEmptyRow(n);
+      tryToPlacePiece(board, --rowNumber);
+    }
+  }; //INNER FN
+
+  tryToPlacePiece(board, 0);
   return solution;
+
+}; //MAIN FN
+
+window.makeEmptyRow = function(n) {
+  return _(_.range(n)).map(function(){
+    return 0;
+  });
 };
 
 window.countNRooksSolutions = function(n){
@@ -47,88 +136,4 @@ var sum = function(array) {
     return currentTotal + element;
   }, 0);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var board = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0]
-];
-
-var solve = function(board) {
-  //board is empty to begin
-  //1) go thru the rows. find the first empty one
-  //2) in that row, for each column:
-  //repeat steps 1 and 2
-  var firstEmptyRow;
-  for (var rowIndex = 0; rowIndex < board.length; rowIndex++) {
-    if (sum(board[rowIndex]) === 0) {
-      firstEmptyRow = board[rowIndex];
-    }
-  }
-  if (firstEmptyRow) {
-    for (var colIndex = 0; colIndex < board.length; colIndex++) {
-      firstEmptyRow[colIndex] = 1;
-    }
-  }
-  else {
-    boardIsComplete = true;
-  }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
