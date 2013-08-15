@@ -36,7 +36,6 @@ window.findNRooksSolution = function(n){
   var board = makeEmptyMatrix(n);
   var solution;
   var counter = 0;
-  // debugger;
 
   var willCreateConflict = function(rowNumber, columnNumber) {
     var result;
@@ -49,9 +48,8 @@ window.findNRooksSolution = function(n){
 
   var tryToPlacePiece = function(board, rowNumber) {
     if (solution) return;
-    //if we pop up to a previous call stack level, WHY does the rowNumber not match our expectation?
+    rowNumber++;
     var row = board[rowNumber];
-    debugger;
     var queenIndex = _.indexOf(row, 1);
     var colNumber;
     if (queenIndex < n - 1) {
@@ -63,7 +61,6 @@ window.findNRooksSolution = function(n){
     }
 
     for (var i = colNumber; i < row.length; i++) {
-      debugger;
       if (willCreateConflict(rowNumber, i)) {
         continue;
       }
@@ -75,7 +72,6 @@ window.findNRooksSolution = function(n){
           return solution;
         }
         else {
-          rowNumber++;
           tryToPlacePiece(board, rowNumber);
         }
       } //  IF
@@ -85,9 +81,8 @@ window.findNRooksSolution = function(n){
     }
   }; //INNER FN
 
-  tryToPlacePiece(board, 0);
+  tryToPlacePiece(board, -1);
   return solution;
-
 }; //MAIN FN
 
 window.makeEmptyRow = function(n) {
