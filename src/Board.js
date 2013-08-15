@@ -93,9 +93,6 @@
       );
     },
 
-
-    // todo: fill in all these functions - they'll help you!
-
     hasRowConflictAt: function(rowIndex){
       return sum(this.get(rowIndex)) >= 2;
     },
@@ -126,7 +123,6 @@
     hasAnyMajorDiagonalConflicts: function(){
       var queenLocations = this.getQueenLocations();
       for (var i = 0; i < queenLocations.length; i++) {
-        // var diagonal = this.getMajorDiagonal(queenLocations[i][0], queenLocations[i][1]);
         var diagonal = this.getMajorDiagonal.apply(this, queenLocations[i]);
         if (sum(diagonal) >= 2) return true;
       }
@@ -141,7 +137,6 @@
     hasAnyMinorDiagonalConflicts: function(){
       var queenLocations = this.getQueenLocations();
       for (var i = 0; i < queenLocations.length; i++) {
-        // var diagonal = this.getMajorDiagonal(queenLocations[i][0], queenLocations[i][1]);
         var diagonal = this.getMinorDiagonal.apply(this, queenLocations[i]);
         if (sum(diagonal) >= 2) return true;
       }
